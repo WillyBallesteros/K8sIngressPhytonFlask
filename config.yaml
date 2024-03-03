@@ -1,0 +1,53 @@
+team:
+   name: CloudTechLatam
+   members:
+      - user: l.angelb@uniandes.edu.co
+        percentage: 25
+      - user: o.ramirezb@uniandes.edu.co
+        percentage: 25
+      - user: w.ballesteros@uniandes.edu.co
+        percentage: 25
+      - user: r.hug@uniandes.edu.co
+        percentage: 25
+board: https://github.com/orgs/MISW-4301-Desarrollo-Apps-en-la-Nube/projects/154/views/1
+url: <url del ingress de la aplicación>
+user-management:
+  folder: ./user_management
+  port: 3000
+  authors:
+    - r.hug@uniandes.edu.co
+post-management:
+  folder: ./post_management
+  port: 3001
+  authors:
+    - w.ballesteros@uniandes.edu.co
+offer-management:
+  folder: ./offer_management
+  port: 3003
+  authors:
+    - o.ramirezb@uniandes.edu.co
+route-management:
+  folder: ./route_management
+  port: 3002
+  authors:
+    - l.angelb@uniandes.edu.co
+score-management:
+  folder: ./score
+  port: 3020
+  authors:
+    - r.hug@uniandes.edu.co
+post-ref003-management:
+  folder: ./post_ref003_management
+  port: 3005
+  authors:
+    - w.ballesteros@uniandes.edu.co
+offer-rf004-management:
+  folder: ./offer_rf004_management
+  port: 3013
+  authors:
+    - o.ramirezb@uniandes.edu.co
+post-ref005-management:
+  folder: ./post_ref005_management
+  port: 3006
+  authors:
+    - l.angelb@uniandes.edu.co

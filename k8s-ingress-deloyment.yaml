@@ -1,0 +1,69 @@
+###################################
+# INGRESS
+###################################
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gateway-ingress-delivery
+  labels:
+    name: gateway-ingress-delivery
+spec:
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: /offers
+        backend:
+          service:
+            name: servicio-offer-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /posts
+        backend:
+          service:
+            name: servicio-post-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /routes
+        backend:
+          service:
+            name: servicio-route-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /users
+        backend:
+          service:
+            name: servicio-user-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /score
+        backend:
+          service:
+            name: servicio-score
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /rf003
+        backend:
+          service:
+            name: servicio-post-rf003-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /rf004
+        backend:
+          service:
+            name: servicio-offer-rf004-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /rf005
+        backend:
+          service:
+            name: servicio-post-ref005-management
+            port:
+              number: 80

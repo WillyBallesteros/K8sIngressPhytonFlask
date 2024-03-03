@@ -1,0 +1,305 @@
+###################################
+# user-management
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management
+  labels:
+    app: user-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-management
+  template:
+    metadata:
+      labels:
+        app: user-management
+    spec:
+      containers:
+        - name: user-management
+          image: us-central1-docker.pkg.dev/tfg-demo-318500/delivery-miso-grupo-17/user_management:1.0
+          env:
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: uri
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-user-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3000
+    type: HTTP
+    requestPath: /users/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-user-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-user-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: user-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+      nodePort: 30022
+
+---
+###################################
+# post-management
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-management
+  labels:
+    app: post-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-management
+  template:
+    metadata:
+      labels:
+        app: post-management
+    spec:
+      containers:
+        - name: post-management
+          image: us-central1-docker.pkg.dev/tfg-demo-318500/delivery-miso-grupo-17/post_management:1.0
+          env:
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: uri
+          ports:
+            - containerPort: 3001
+          imagePullPolicy: Always
+
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-post-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3001
+    type: HTTP
+    requestPath: /posts/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-post-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-post-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: post-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3001
+      nodePort: 30020
+
+---
+###################################
+# offer-management
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: offer-management
+  labels:
+    app: offer-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: offer-management
+  template:
+    metadata:
+      labels:
+        app: offer-management
+    spec:
+      containers:
+        - name: offer-management
+          image: us-central1-docker.pkg.dev/tfg-demo-318500/delivery-miso-grupo-17/offer_management:1.0
+          env:
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: uri
+          ports:
+            - containerPort: 3003
+          imagePullPolicy: Always
+
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-offer-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3003
+    type: HTTP
+    requestPath: /offers/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-offer-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-offer-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: offer-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3003
+      nodePort: 30109
+
+---
+###################################
+# route-management
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: route-management
+  labels:
+    app: route-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: route-management
+  template:
+    metadata:
+      labels:
+        app: route-management
+    spec:
+      containers:
+        - name: route-management
+          image: us-central1-docker.pkg.dev/tfg-demo-318500/delivery-miso-grupo-17/route_management:1.0
+          env:
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: uri
+          ports:
+            - containerPort: 3002
+          imagePullPolicy: Always
+
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-route-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3002
+    type: HTTP
+    requestPath: /routes/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-route-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-route-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: route-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3002
+      nodePort: 30021
+
+---
+###################################
+# offer-management
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: offer-management
+  labels:
+    app: offer-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: offer-management
+  template:
+    metadata:
+      labels:
+        app: offer-management
+    spec:
+      containers:
+        - name: offer-management
+          image: us-central1-docker.pkg.dev/tfg-demo-318500/delivery-miso-grupo-17/offer_management:1.0
+          env:
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: uri
+          ports:
+            - containerPort: 3003
+          imagePullPolicy: Always
+
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-offer-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3003
+    type: HTTP
+    requestPath: /offers/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-offer-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-offer-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: offer-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3003
+      nodePort: 30109
+
+---

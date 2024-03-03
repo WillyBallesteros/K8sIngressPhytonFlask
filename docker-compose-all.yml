@@ -1,0 +1,109 @@
+version: '3'
+
+services:
+  postgres_user:
+    container_name: user_db
+    image: postgres:15.1
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: user_user
+      POSTGRES_PASSWORD: user_password
+    networks:
+      - user_net
+    volumes:
+      - user_db_vol:/var/lib/postgresql/data
+
+  postgres_post:
+    container_name: post_db
+    image: postgres:15.1
+    environment:
+      POSTGRES_DB: post_db
+      POSTGRES_USER: post_user
+      POSTGRES_PASSWORD: post_password
+    networks:
+      - post_net
+    volumes:
+      - post_db_vol:/var/lib/postgresql/data
+
+  postgres_offer:
+    container_name: offer_db
+    image: postgres:15.1
+    environment:
+      POSTGRES_DB: offer_db
+      POSTGRES_USER: offer_user
+      POSTGRES_PASSWORD: offer_password
+    networks:
+      - offer_net
+    volumes:
+      - offer_db_vol:/var/lib/postgresql/data
+
+  postgres_route:
+    container_name: route_db
+    image: postgres:15.1
+    environment:
+      POSTGRES_DB: route_db
+      POSTGRES_USER: route_user
+      POSTGRES_PASSWORD: route_password
+    networks:
+      - route_net
+    volumes:
+      - route_db_vol:/var/lib/postgresql/data
+
+  user_management:
+    build:
+      context: ./user_management
+    environment:
+      DATABASE_URL: postgresql://user_user:user_password@postgres_user:5432/user_db
+    ports:
+      - "3000:3000"
+    networks:
+      - user_net
+      - app_net
+
+  post_management:
+    build:
+      context: ./post_management
+    environment:
+      DATABASE_URL: postgresql://post_user:post_password@postgres_post:5432/post_db
+    ports:
+      - "3001:3001"
+    networks:
+      - post_net
+      - app_net
+
+  offer_management:
+    build:
+      context: ./offer_management
+    environment:
+      DATABASE_URL: postgresql://offer_user:offer_password@postgres_offer:5432/offer_db
+    ports:
+      - "3003:3003"
+    networks:
+      - offer_net
+      - app_net
+
+  route_management:
+    build:
+      context: ./route_management
+    environment:
+      DATABASE_URL: postgresql://route_user:route_password@postgres_route:5432/route_db
+    ports:
+      - "3002:3002"
+    networks:
+      - route_net
+      - app_net
+
+networks:
+  user_net:
+  post_net:
+  offer_net:
+  route_net:
+  app_net:
+    driver: bridge
+
+volumes:
+  user_db_vol:
+  post_db_vol:
+  offer_db_vol:
+  route_db_vol:
+

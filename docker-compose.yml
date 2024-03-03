@@ -1,0 +1,135 @@
+version: '3'
+
+services:
+  postgres_user:
+    container_name: user_db
+    image: postgres:15.1
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PORT: ${DB_PORT}
+    networks:
+      - user_net
+    volumes:
+      - user_db_vol:/var/lib/postgresql/data
+  user_management:
+    build:
+      context: ./user_management
+    depends_on:
+      - postgres_user
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_HOST: user_db
+    ports:
+      - "3000:3000"
+    networks:
+      - user_net
+      - app_net  
+
+
+
+  postgres_post:
+    container_name: post_db
+    image: postgres:15.1
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PORT: ${DB_PORT}
+    networks:
+      - post_net
+    volumes:
+      - post_db_vol:/var/lib/postgresql/data
+
+  post_management:
+    build:
+      context: ./post_management
+    depends_on:
+      - postgres_post
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_HOST: post_db
+    ports:
+      - "3001:3001"
+    networks:
+      - post_net
+      - app_net  
+  
+  postgres_route:
+    container_name: route_db
+    image: postgres:15.1
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PORT: ${DB_PORT}
+    networks:
+      - route_net
+    volumes:
+      - route_db_vol:/var/lib/postgresql/data
+
+  route_management:
+    build:
+      context: ./route_management
+    depends_on:
+      - postgres_route
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_HOST: route_db
+    ports:
+      - "3002:3002"
+    networks:
+      - route_net
+      - app_net  
+
+  postgres_offer:
+    container_name: offer_db
+    image: postgres:15.1
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PORT: ${DB_PORT}
+    networks:
+      - offer_net
+    volumes:
+      - offer_db_vol:/var/lib/postgresql/data
+  offer_management:
+    build:
+      context: ./offer_management
+    depends_on:
+      - postgres_offer
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_HOST: offer_db
+    ports:
+      - "3003:3003"
+    networks:
+      - offer_net
+      - app_net 
+
+networks:
+  user_net:
+  post_net:
+  route_net:
+  offer_net:
+  app_net:
+
+volumes:
+  user_db_vol:
+  post_db_vol:
+  route_db_vol:
+  offer_db_vol:

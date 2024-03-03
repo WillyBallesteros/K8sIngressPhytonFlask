@@ -1,0 +1,595 @@
+###################################
+# user_management 
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management
+  labels:
+    app: user-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-management
+  template:
+    metadata:
+      labels:
+        app: user-management
+    spec:
+      containers:
+        - name: user-management
+          image: us-central1-docker.pkg.dev/miso-dann/delivery-miso-grupo-17/user_management:1.0
+          env:
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets 
+                  key: uri
+          ports:
+            - containerPort: 3000
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-user-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3000
+    type: HTTP
+    requestPath: /users/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-user-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-user-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: user-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+      nodePort: 30100
+---
+###################################
+# post_management 
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-management
+  labels:
+    app: post-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-management
+  template:
+    metadata:
+      labels:
+        app: post-management
+    spec:
+      containers:
+        - name: post-management
+          image: us-central1-docker.pkg.dev/miso-dann/delivery-miso-grupo-17/post_management:1.0
+          env:
+            - name: USER_MS
+              value: http://user-management
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets 
+                  key: uri
+          ports:
+            - containerPort: 3001
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-post-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3001
+    type: HTTP
+    requestPath: /post/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-post-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-post-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: post-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3001
+      nodePort: 30101
+---
+###################################
+# route_management  
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: route-management
+  labels:
+    app: route-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: route-management
+  template:
+    metadata:
+      labels:
+        app: route-management
+    spec:
+      containers:
+        - name: route-management
+          image: us-central1-docker.pkg.dev/miso-dann/delivery-miso-grupo-17/route_management:1.0
+          env:
+            - name: USER_MS
+              value: http://user-management
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets 
+                  key: uri
+          ports:
+            - containerPort: 3002
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-route-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3002
+    type: HTTP
+    requestPath: /routes/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-route-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-route-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: route-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3002
+      nodePort: 30102
+---
+###################################
+# offer-management 
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: offer-management
+  labels:
+    app: offer-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: offer-management
+  template:
+    metadata:
+      labels:
+        app: offer-management
+    spec:
+      containers:
+        - name: offer-management
+          image: us-central1-docker.pkg.dev/miso-dann/delivery-miso-grupo-17/offer_management:1.0
+          env:
+            - name: USER_MS
+              value: http://user-management
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets 
+                  key: uri
+          ports:
+            - containerPort: 3003
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-offer-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3003
+    type: HTTP
+    requestPath: /offers/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-offer-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-offer-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: offer-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3003
+      nodePort: 30103
+---
+###################################
+# post_ref003_management  
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-ref003-management 
+  labels:
+    app: post-ref003-management 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-ref003-management 
+  template:
+    metadata:
+      labels:
+        app: post-ref003-management 
+    spec:
+      containers:
+        - name: post-ref003-management
+          image: us-central1-docker.pkg.dev/miso-dann/delivery-miso-grupo-17/post_ref003_management:1.0
+          env:
+            - name: OFFER_MS
+              value: http://offer-management
+            - name: ROUTE_MS
+              value: http://route-management
+            - name: POST_MS
+              value: http://post-management
+            - name: USER_MS
+              value: http://user-management
+            - name: SCORE_MS
+              value: http://score-management
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: uri
+          ports:
+            - containerPort: 3005
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-post-ref003-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3005
+    type: HTTP
+    requestPath: /rf003/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-post-ref003-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-post-ref003-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: post-ref003-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3005
+      nodePort: 30105
+---
+###################################
+# offer-rf004-management 
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: offer-rf004-management
+  labels:
+    app: offer-rf004-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: offer-rf004-management
+  template:
+    metadata:
+      labels:
+        app: offer-rf004-management
+    spec:
+      containers:
+        - name: offer-rf004-management
+          image: us-central1-docker.pkg.dev/miso-dann/delivery-miso-grupo-17/offer_rf004_management:1.0
+          ports:
+            - containerPort: 3013
+          env:
+            - name: OFFER_MS
+              value: http://offer-management
+            - name: ROUTE_MS
+              value: http://route-management
+            - name: POST_MS
+              value: http://post-management
+            - name: USER_MS
+              value: http://user-management
+            - name: SCORE_MS
+              value: http://score-management
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: uri
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-offer-rf004-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3013
+    type: HTTP
+    requestPath: /rf004/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-offer-rf004-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-offer-rf004-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: offer-rf004-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3013
+      nodePort: 30113
+---
+###################################
+# offer-ref005-management 
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: offer-ref005-management
+  labels:
+    app: offer-ref005-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: offer-ref005-management
+  template:
+    metadata:
+      labels:
+        app: offer-ref005-management
+    spec:
+      containers:
+        - name: offer-ref005-management
+          image: us-central1-docker.pkg.dev/miso-dann/delivery-miso-grupo-17/post_ref005_management:1.0
+          ports:
+            - containerPort: 3006
+          env:
+            - name: OFFER_MS
+              value: http://offer-management
+            - name: ROUTE_MS
+              value: http://route-management
+            - name: POST_MS
+              value: http://post-management
+            - name: USER_MS
+              value: http://user-management
+            - name: SCORE_MS
+              value: http://score-management
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: uri
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-offer-ref005-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3006
+    type: HTTP
+    requestPath: /rf005/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-offer-ref005-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-offer-ref005-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: offer-ref005-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3006
+      nodePort: 30106
+---
+###################################
+# score 
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: score-management
+  labels:
+    app: score-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: score-management
+  template:
+    metadata:
+      labels:
+        app: score-management
+    spec:
+      containers:
+        - name: score-management
+          image: us-central1-docker.pkg.dev/miso-dann/delivery-miso-grupo-17/score:1.0
+          ports:
+            - containerPort: 3020
+          env:
+            - name: OFFER_MS
+              value: http://offer-management
+            - name: ROUTE_MS
+              value: http://route-management
+            - name: POST_MS
+              value: http://post-management
+            - name: USER_MS
+              value: http://user-management
+            - name: SCORE_MS
+              value: http://score-management
+            - name: "DELIVERY_DATABASE_URI"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: uri
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: delivery-score-management-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3020
+    type: HTTP
+    requestPath: /score/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-score-management
+  annotations:
+    cloud.google.com/backend-config: '{"default": "delivery-score-management-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: score-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3020
+      nodePort: 30120
+###################################
+# INGRESS
+###################################
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gateway-ingress-delivery
+  labels:
+    name: gateway-ingress-delivery
+spec:
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: /users
+        backend:
+          service:
+            name: servicio-user-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /posts
+        backend:
+          service:
+            name: servicio-post-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /routes
+        backend:
+          service:
+            name: servicio-route-management
+            port:
+              number: 80  
+      - pathType: Prefix
+        path: /offers
+        backend:
+          service:
+            name: servicio-offer-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /rf003
+        backend:
+          service:
+            name: servicio-post-ref003-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /rf004
+        backend:
+          service:
+            name: servicio-offer-rf004-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /rf005
+        backend:
+          service:
+            name: servicio-offer-ref005-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /score
+        backend:
+          service:
+            name: servicio-score-management
+            port:
+              number: 80

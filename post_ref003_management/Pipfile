@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "post"
+
+[packages]
+wheel = "*"
+flask = "*"
+marshmallow = "*"
+python-abc = "*"
+python-dotenv = "*"
+pytest = "*"
+pytest-cov = "~=4.0.0"
+pytest-mock = "~=3.10.0"
+pytest-env = "~=0.8.1"
+sqlalchemy = "*"
+requests = "*"
+psycopg2-binary = "*"
+importlib-metadata = "*"
